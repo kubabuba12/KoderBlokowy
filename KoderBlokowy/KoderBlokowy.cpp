@@ -6,35 +6,58 @@
 #include "MacierzG.h"
 #include <iostream>
 #include <math.h>
-#define K 24	//długość wiadomości
-#define N 29	//długość ciągu kodowego
+
 using namespace std;
 
-
-/*
-void losujRamke()
-{
-	int ramka[K];
-	srand(time(NULL));
-	for (int i = 0; i < K; i++) {
-		ramka[i] = rand() % 2;
-		cout << ramka[i];
+//bedzie liczba calkowita, ale moze int nie starczyc to sie przerobi na longa czy cos
+int bledyBezKodowania(int *ciagKodowy, int *odebranyCiagKodowy) {
+	int bledyBez = 0;
+	for (int i = 0; i < sizeof(ciagKodowy); i++) {
+		if (*(ciagKodowy + i) != *(odebranyCiagKodowy + i)) {
+			bledyBez++;
+		}
+		else
+			continue;
+	}
+	return bledyBez;
+}
+int bledyZKodowaniem(int *ramka, int *ciagZdekodowany) {
+	int bledyZK = 0;
+	for (int i = 0; i < sizeof(ramka); i++) {
+		if (*(ramka + i) != *(ciagZdekodowany + i)) {
+			bledyZK++;
+		}
+		else
+			continue;
 	}
 }
-*/
 int main()
 {
-	//	1. Losowanie ramki
-	//	2. wymnażanie jej przez macierz generującą
-	//	3. wysłanie do kanału
-    cout << "Hello World!\n"; 
-	//losujRamke();
+	int bledyBezK;
+	int bledyZK;
+    
 	MacierzG macierzG;
 	macierzG.wyznaczG();
 	macierzG.zakoduj();
 	//do testu
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i <29; i++)
 		cout << *(macierzG.getCiag()+i);
+
+	//Tutaj petla programu
+	//	for, albo while zalezy jaki warunek
+	//	1. wylosowanie ramki, zakodowanie -> macierzG.zakoduj();
+	//	2. ciag kodowy do kanalu
+	//	3. detekcja
+	//	4. porównanie ciągów bez kodowania
+	//	bledyBezK = bledyBezKodowania(macierzG.getCiag(), odebrany);
+
+	//	5. dekodowanie
+	//	6. porównanie z kodowaniem
+	//	bledyZK = bledyZKodowaniem(macierzG.getRamka(), zdekodowany);
+
+	//	7. wyznaczenie wartosci ber
+	//int berBezK = bledyBezK / (29 * liczbaPetli);
+	//int berZK = bledyZK / (24 * liczbaPetli);
 	
 }
 

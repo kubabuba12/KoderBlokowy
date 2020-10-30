@@ -51,7 +51,6 @@ void MacierzG::wyznaczG() {
 	}
 }
 void MacierzG::zakoduj() {
-	int ramka[K];
 	srand(time(NULL));
 	for (int i = 0; i < K; i++) {
 		ramka[i] = rand() % 2;
@@ -69,6 +68,9 @@ void MacierzG::wyznaczCiagKodowy(int *informacja) {
 }
 int* MacierzG::getCiag() {
 	return ciagKodowy;
+}
+int* MacierzG::getRamka() {
+	return ramka;
 }
 MacierzG::~MacierzG()
 {

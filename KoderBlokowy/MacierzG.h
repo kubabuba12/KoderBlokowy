@@ -8,12 +8,14 @@ private:
 	int wektoryP[K][N - K];
 	int macierzG[K][N];
 	int ciagKodowy[N];
+	int ramka[K];
 public:
 	MacierzG();
 	void wyznaczG();
 	void wyznaczCiagKodowy(int *);
 	void zakoduj();
 	int* getCiag();
+	int* getRamka();
 	~MacierzG();
 };
 
