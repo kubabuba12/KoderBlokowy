@@ -37,17 +37,17 @@ int main()
 	int bledyBezK;
 	int bledyZK;
 	int es_n0;
-	//float ciagWyjsciowyR[K];
-	//int ciagWyjsciowy[K];
+	float ciagWyjsciowyR[K];
+	int ciagWyjsciowy[K];
 	//int ciagZdekodowany[K];
 
 	Macierz macierz;
 	macierz.wyznaczG();
 	macierz.zakoduj();
 
-	//cout << "Wpisz Es/N0: " << endl;
-	//cin >> es_n0;
-	/*
+	cout << "Wpisz Es/N0: " << endl;
+	cin >> es_n0;
+
 	for (int i = 0; i < K; i++)
 	{
 		ciagWyjsciowyR[i] = 0;
@@ -66,9 +66,9 @@ int main()
 			ciagWyjsciowy[j] = 0;
 		}
 	}
-	*/
+	
 	macierz.wyznaczH();
-	//macierzH.wyznaczCiagOdebrany(ciagWyjsciowy);
+	macierz.wyznaczCiagOdebrany(ciagWyjsciowy);
 
 
 	//do testu
