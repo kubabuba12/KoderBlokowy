@@ -3,7 +3,7 @@
 
 #include "pch.h"
 #include "Kanal.h"	//nagłówek z funkcją symulującą kanał
-#include "MacierzG.h"
+#include "Macierz.h"
 #include <iostream>
 #include <math.h>
 
@@ -30,18 +30,50 @@ int bledyZKodowaniem(int *ramka, int *ciagZdekodowany) {
 		else
 			continue;
 	}
+	return bledyZK;
 }
 int main()
 {
 	int bledyBezK;
 	int bledyZK;
-    
-	MacierzG macierzG;
-	macierzG.wyznaczG();
-	macierzG.zakoduj();
+	int es_n0;
+	//float ciagWyjsciowyR[K];
+	//int ciagWyjsciowy[K];
+	//int ciagZdekodowany[K];
+
+	Macierz macierz;
+	macierz.wyznaczG();
+	macierz.zakoduj();
+
+	//cout << "Wpisz Es/N0: " << endl;
+	//cin >> es_n0;
+	/*
+	for (int i = 0; i < K; i++)
+	{
+		ciagWyjsciowyR[i] = 0;
+	}
+
+	kanal(es_n0, K, macierzG.getCiag(), ciagWyjsciowyR);
+
+	for (int j = 0; j < 29; j++)
+	{
+		if (ciagWyjsciowyR[j] > 0)
+		{
+			ciagWyjsciowy[j] = 1;
+		}
+		else
+		{
+			ciagWyjsciowy[j] = 0;
+		}
+	}
+	*/
+	macierz.wyznaczH();
+	//macierzH.wyznaczCiagOdebrany(ciagWyjsciowy);
+
+
 	//do testu
-	for (int i = 0; i <29; i++)
-		cout << *(macierzG.getCiag()+i);
+	for (int i = 0; i < 29; i++)
+		cout << *(macierz.getCiag() + i);
 
 	//Tutaj petla programu
 	//	for, albo while zalezy jaki warunek

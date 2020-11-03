@@ -1,0 +1,139 @@
+#include "pch.h"
+#include "Macierz.h"
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+Macierz::Macierz()
+{
+}
+void Macierz::wyznaczG() {
+	//int macierzBledow[N][N - K];
+	for (int i = 0; i < N; i++) {
+		int liczba = i + 1;
+		for (int j = 4; j >= 0; j--) {
+			if (liczba != 0) {
+				macierzBledow[i][j] = liczba % 2;
+				liczba /= 2;
+			}
+			else {
+				macierzBledow[i][j] = 0;
+			}
+
+		}
+	}
+	//int wektoryP[K][N - K];
+	//wektory ortogonalne to wiersze 1,2,4,8,16,32... potêgi 2 (nie wiem jak to zapisaæ)
+	for (int j = 4; j >= 0; j--) {
+		int licznik = 0;
+		for (int i = 0; i < N; i++) {
+			if (i == 0 || i == 1 || i == 3 || i == 7 || i == 15)
+				continue;
+			else {
+				wektoryP[licznik][-1 * (j - 4)] = macierzBledow[i][j];
+				licznik++;
+			}
+		}
+	}
+	//WektoryP + macierz I => macierz generujaca G[P;I]
+	//int macierzG[K][N];
+	int licznik = 0;
+	int licznik2 = 0;
+	//Przemieszanie kolejnoœci kolumn w macierzyG(tak aby by³y jak p. Agnieszka mówi³a)
+	for (int j = 0; j < N; j++) {
+		bool x = true;
+		bool y = false;
+		for (int i = 0; i < K; i++) {
+			if (j == 0 || j == 1 || j == 3 || j == 7 || j == 15) {
+				macierzG[i][j] = wektoryP[i][licznik2];
+				x = false;
+				y = true;
+			}
+			else if (i == licznik) {
+				macierzG[licznik][j] = 1;
+			}
+			else
+				macierzG[i][j] = 0;
+		}
+		if(x)
+			licznik++;
+		if (y)
+			licznik2++;
+	}
+}
+void Macierz::zakoduj() {
+	srand(time(NULL));
+	for (int i = 0; i < K; i++) {
+		ramka[i] = rand() % 2;
+	}
+	wyznaczCiagKodowy(ramka);
+}
+void Macierz::wyznaczCiagKodowy(int *informacja) {
+	for (int i = 0; i < N; i++) {
+		int tmp = 0;
+		for (int j = 0; j < K; j++) {
+			tmp += *(informacja + j)*macierzG[j][i];
+		}
+		ciagKodowy[i] = tmp % 2;
+	}
+}
+void Macierz::wyznaczH() {
+	//Transponowanie P
+	for (int i = 0; i < N - K; i++)
+	{
+		for (int j = 0; j < K; j++)
+		{
+			macierzPT[j][i] = wektoryP[i][j];
+		}
+	}
+	//ciagi informacyjne w linijkach o potêgach 2 tj 1,2,4,8,16 itd...
+	//WektoryP + macierz I => macierz Ht
+	//int macierzH[N][K];
+	for (int j = 0; j < N; j++) {
+		for (int i = 0; i < K; i++) {
+			if (j > 5) {
+				macierzHt[i][j] = macierzPT[i][j];
+			}
+			else if (i == j - 5) {
+				macierzH[i][j] = 1;
+			}
+			else
+				macierzH[i][j] = 0;
+		}
+	}//i-wiersze, j-kolumny
+	/*int licznik = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N-K; j++) {
+			if (i != 0 || i != 1 || i != 3 || i != 7 || i != 15) {
+				macierzHt[i][j] = macierzPT[licznik][j];
+				
+			}
+			else {
+
+			}
+		}
+	}
+	*/
+}
+// to tutaj to nie wiem jak to ma byæ
+void Macierz::wyznaczCiagOdebrany(int* ciag) {
+	for (int i = 0; i < N; i++) {
+		int tmp = 0;
+		for (int j = 0; j < K; j++) {
+			tmp += *(ciag + j)*macierzHt[j][i];
+		}
+		ciagOdebrany[i] = tmp;
+	}
+}
+int* Macierz::getCiagOdebrany() {
+	return ciagOdebrany;
+}
+int* Macierz::getCiag() {
+	return ciagKodowy;
+}
+int* Macierz::getRamka() {
+	return ramka;
+}
+Macierz::~Macierz()
+{
+}
