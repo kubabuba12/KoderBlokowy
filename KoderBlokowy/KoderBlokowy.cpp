@@ -38,7 +38,7 @@ int main()
 	int es_n0;
 	float ciagWyjsciowyR[K];
 	int ciagWyjsciowy[K];
-	int ciagZdekodowany[K]
+	int ciagZdekodowany[K];
     
 	MacierzG macierzG;
 	macierzG.wyznaczG();
