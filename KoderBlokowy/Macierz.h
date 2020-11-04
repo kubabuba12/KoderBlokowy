@@ -10,6 +10,8 @@ private:
 	int ciagKodowy[N];
 	int ramka[K];
 	int ciagOdebrany[N];
+	int syndrom[N - K];
+	int ciagZdekodowany[K];
 	int macierzH[N][N - K];
 	int macierzPT[K][N - K];
 	int macierzHt[N][N - K] = {
@@ -53,6 +55,7 @@ public:
 	int* getCiag();
 	int* getCiagOdebrany();
 	int* getRamka();
+	int* getCiagZdekodowany();
 	~Macierz();
 };
 

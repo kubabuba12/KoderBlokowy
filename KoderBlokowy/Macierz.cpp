@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <math.h>
 using namespace std;
 Macierz::Macierz()
 {
@@ -115,14 +116,37 @@ void Macierz::wyznaczH() {
 	}
 	*/
 }
-// to tutaj to nie wiem jak to ma byæ
 void Macierz::wyznaczCiagOdebrany(int* ciag) {
-	for (int i = 0; i < N; i++) {
+	int miejsceBledu = 0;
+	bool blad = false;
+	for (int i = 0; i < N-K; i++) {
 		int tmp = 0;
-		for (int j = 0; j < K; j++) {
+		for (int j = 0; j < N; j++) {
 			tmp += *(ciag + j)*macierzHt[j][i];
 		}
-		ciagOdebrany[i] = tmp;
+		syndrom[i] = tmp % 2;
+	}
+	for (int i = 0; i < N - K; i++) {
+		if (syndrom[i] != 0) {
+			blad = true;
+			miejsceBledu += pow(i, 2);
+		}
+	}
+	if (blad) {
+		if (*(ciag + miejsceBledu) == 0)
+			*(ciag + miejsceBledu) = 1;
+		else
+			*(ciag + miejsceBledu) = 0;
+	}
+	//wyznaczenie ci¹gu po dekodowaniu
+	int licznik = 0;
+	for (int i = 0; i < N; i++) {
+		if (i == 0 || i == 1 || i == 3 || i == 7 || i == 15)
+			continue;
+		else {
+			ciagZdekodowany[licznik] = *(ciag + i);
+			licznik++;
+		}
 	}
 }
 int* Macierz::getCiagOdebrany() {
@@ -133,6 +157,9 @@ int* Macierz::getCiag() {
 }
 int* Macierz::getRamka() {
 	return ramka;
+}
+int* Macierz::getCiagZdekodowany() {
+	return ciagZdekodowany;
 }
 Macierz::~Macierz()
 {

@@ -6,15 +6,16 @@
 #include "Macierz.h"
 #include <iostream>
 #include <math.h>
+#define N 29
 
 using namespace std;
 
 //bedzie liczba calkowita, ale moze int nie starczyc to sie przerobi na longa czy cos
 int bledyBezKodowania(int *ciagKodowy, int *odebranyCiagKodowy) {
 	int bledyBez = 0;
-	for (int i = 0; i < sizeof(ciagKodowy); i++) {
+	for (int i = 0; i < N; i++) {
 		if (*(ciagKodowy + i) != *(odebranyCiagKodowy + i)) {
-			bledyBez++;
+			bledyBez+=1;
 		}
 		else
 			continue;
@@ -23,7 +24,7 @@ int bledyBezKodowania(int *ciagKodowy, int *odebranyCiagKodowy) {
 }
 int bledyZKodowaniem(int *ramka, int *ciagZdekodowany) {
 	int bledyZK = 0;
-	for (int i = 0; i < sizeof(ramka); i++) {
+	for (int i = 0; i < 24; i++) {
 		if (*(ramka + i) != *(ciagZdekodowany + i)) {
 			bledyZK++;
 		}
@@ -37,25 +38,26 @@ int main()
 	int bledyBezK;
 	int bledyZK;
 	int es_n0;
-	float ciagWyjsciowyR[K];
-	int ciagWyjsciowy[K];
+	float ciagWyjsciowyR[N];
+	int ciagWyjsciowy[N];
 	//int ciagZdekodowany[K];
 
 	Macierz macierz;
 	macierz.wyznaczG();
+	macierz.wyznaczH();
 	macierz.zakoduj();
 
 	cout << "Wpisz Es/N0: " << endl;
 	cin >> es_n0;
 
-	for (int i = 0; i < K; i++)
+	for (int i = 0; i < N; i++)
 	{
 		ciagWyjsciowyR[i] = 0;
 	}
 
-	kanal(es_n0, K, macierzG.getCiag(), ciagWyjsciowyR);
+	kanal(es_n0, N, macierz.getCiag(), ciagWyjsciowyR);
 
-	for (int j = 0; j < 29; j++)
+	for (int j = 0; j < N; j++)
 	{
 		if (ciagWyjsciowyR[j] > 0)
 		{
@@ -66,14 +68,28 @@ int main()
 			ciagWyjsciowy[j] = 0;
 		}
 	}
-	
-	macierz.wyznaczH();
+	//wyznaczenie błędów bez kodowania
+	bledyBezK = bledyBezKodowania(macierz.getCiag(), ciagWyjsciowy);
+
 	macierz.wyznaczCiagOdebrany(ciagWyjsciowy);
 
+	bledyZK = bledyZKodowaniem(macierz.getRamka(), macierz.getCiagZdekodowany());
 
 	//do testu
+	cout << "Ciag kodowy:";
 	for (int i = 0; i < 29; i++)
 		cout << *(macierz.getCiag() + i);
+	cout << endl << "ramka: ";
+	for (int i = 0; i < 24; i++)
+		cout << *(macierz.getRamka() + i);
+	cout << endl << "Ciag Wyjsciowy:";
+	for (int i = 0; i < 29; i++)
+		cout << ciagWyjsciowy[i];
+	cout << endl << "Ciag Zdekodowany:";
+	for (int i = 0; i < 24; i++)
+		cout << *(macierz.getCiagZdekodowany()+i);
+	cout << endl << "Bledy bezK: " << bledyBezK << endl;
+	cout << "Bledy zK: " << bledyZK;
 
 	//Tutaj petla programu
 	//	for, albo while zalezy jaki warunek
@@ -81,7 +97,7 @@ int main()
 	//	2. ciag kodowy do kanalu
 	//	3. detekcja
 	//	4. porównanie ciągów bez kodowania
-	//	bledyBezK = bledyBezKodowania(macierzG.getCiag(), odebrany);
+		
 
 	//	5. dekodowanie
 	//	6. porównanie z kodowaniem
