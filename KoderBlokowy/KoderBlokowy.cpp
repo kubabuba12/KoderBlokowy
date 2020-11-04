@@ -6,6 +6,8 @@
 #include "Macierz.h"
 #include <iostream>
 #include <math.h>
+#include <fstream>
+#include <iomanip>
 #define N 29
 
 using namespace std;
@@ -35,77 +37,83 @@ int bledyZKodowaniem(int *ramka, int *ciagZdekodowany) {
 }
 int main()
 {
-	int bledyBezK;
-	int bledyZK;
-	int es_n0;
+	float bledyBezK = 0;
+	float bledyZK = 0;
 	float ciagWyjsciowyR[N];
 	int ciagWyjsciowy[N];
-	//int ciagZdekodowany[K];
+	float minEsNo;
+	float maxEsNo;
+	float krok;
+	int iloscRamek;
+	fstream plik;
+	float berBezK;
+	float berZK;
 
+	//oblicznie macierzy G i H
 	Macierz macierz;
 	macierz.wyznaczG();
 	macierz.wyznaczH();
-	macierz.zakoduj();
-
-	cout << "Wpisz Es/N0: " << endl;
-	cin >> es_n0;
-
-	for (int i = 0; i < N; i++)
+	
+	//wczytanie danych przez użytkownika
+	cout << "Wpisz minimalne Es/N0: " << endl;
+	cin >> minEsNo;
+	cout << "Wpisz maksymalne Es/N0: " << endl;
+	cin >> maxEsNo;
+	cout << "Wpisz krok zwieszania: " << endl;
+	cin >> krok;
+	cout << "Wpisz liczbe blokow danych: " << endl;
+	cin >> iloscRamek;
+	//stworzenie pliku do wyników
+	plik.open("wyniki.txt", ios::out);
+	if (plik.good() == false)
 	{
-		ciagWyjsciowyR[i] = 0;
+		cout << "Nie udalo sie otworzyc pliku!" << endl;
+	}
+	plik << "Es/No [dB]" << setw(30) << "BER bez kodowania" << setw(30) << "BER z kodowaniem" << endl;
+	plik.close();
+	//główna pętla programu
+	for (float i = minEsNo; i <= maxEsNo; i += krok) {
+		for (int j = 0; j < iloscRamek; j++) {
+			//wylosowanie ramki, wyznaczenie ciągu kodowego
+			macierz.zakoduj();
+			//symulacja kanału
+			kanal(i, N, macierz.getCiag(), ciagWyjsciowyR);
+			//detekcja
+			for (int j = 0; j < N; j++)
+			{
+				if (ciagWyjsciowyR[j] > 0)
+				{
+					ciagWyjsciowy[j] = 1;
+				}
+				else
+				{
+					ciagWyjsciowy[j] = 0;
+				}
+			}
+			//wyznaczenie błędów bez kodowania
+			bledyBezK += bledyBezKodowania(macierz.getCiag(), ciagWyjsciowy);
+			//odkodowanie, naprawienie błędu
+			macierz.wyznaczCiagOdebrany(ciagWyjsciowy);
+			//wyznaczenie błędów z kodowaniem
+			bledyZK += bledyZKodowaniem(macierz.getRamka(), macierz.getCiagZdekodowany());
+		}
+		//obliczenie BER
+		berBezK = bledyBezK / (29 * iloscRamek);
+		berZK = bledyZK / (24 * iloscRamek);
+		//zapis danych do pliku
+		plik.open("wyniki.txt", ios::app);
+		plik << i << setw(30) << berBezK << setw(30) << berZK << endl;
+		plik.close();
+		//wyzerowanie zmiennych
+		berBezK = 0;
+		berZK = 0;
+		bledyBezK = 0;
+		bledyZK = 0;
 	}
 
-	kanal(es_n0, N, macierz.getCiag(), ciagWyjsciowyR);
 
-	for (int j = 0; j < N; j++)
-	{
-		if (ciagWyjsciowyR[j] > 0)
-		{
-			ciagWyjsciowy[j] = 1;
-		}
-		else
-		{
-			ciagWyjsciowy[j] = 0;
-		}
-	}
-	//wyznaczenie błędów bez kodowania
-	bledyBezK = bledyBezKodowania(macierz.getCiag(), ciagWyjsciowy);
 
-	macierz.wyznaczCiagOdebrany(ciagWyjsciowy);
 
-	bledyZK = bledyZKodowaniem(macierz.getRamka(), macierz.getCiagZdekodowany());
-
-	//do testu
-	cout << "Ciag kodowy:";
-	for (int i = 0; i < 29; i++)
-		cout << *(macierz.getCiag() + i);
-	cout << endl << "ramka: ";
-	for (int i = 0; i < 24; i++)
-		cout << *(macierz.getRamka() + i);
-	cout << endl << "Ciag Wyjsciowy:";
-	for (int i = 0; i < 29; i++)
-		cout << ciagWyjsciowy[i];
-	cout << endl << "Ciag Zdekodowany:";
-	for (int i = 0; i < 24; i++)
-		cout << *(macierz.getCiagZdekodowany()+i);
-	cout << endl << "Bledy bezK: " << bledyBezK << endl;
-	cout << "Bledy zK: " << bledyZK;
-
-	//Tutaj petla programu
-	//	for, albo while zalezy jaki warunek
-	//	1. wylosowanie ramki, zakodowanie -> macierzG.zakoduj();
-	//	2. ciag kodowy do kanalu
-	//	3. detekcja
-	//	4. porównanie ciągów bez kodowania
-		
-
-	//	5. dekodowanie
-	//	6. porównanie z kodowaniem
-	//	bledyZK = bledyZKodowaniem(macierzG.getRamka(), zdekodowany);
-
-	//	7. wyznaczenie wartosci ber
-	//int berBezK = bledyBezK / (29 * liczbaPetli);
-	//int berZK = bledyZK / (24 * liczbaPetli);
 	
 }
 
