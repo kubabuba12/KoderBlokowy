@@ -87,34 +87,6 @@ void Macierz::wyznaczH() {
 			macierzPT[j][i] = wektoryP[i][j];
 		}
 	}
-	//ciagi informacyjne w linijkach o potêgach 2 tj 1,2,4,8,16 itd...
-	//WektoryP + macierz I => macierz Ht
-	//int macierzH[N][K];
-	for (int j = 0; j < N; j++) {
-		for (int i = 0; i < K; i++) {
-			if (j > 5) {
-				macierzHt[i][j] = macierzPT[i][j];
-			}
-			else if (i == j - 5) {
-				macierzH[i][j] = 1;
-			}
-			else
-				macierzH[i][j] = 0;
-		}
-	}//i-wiersze, j-kolumny
-	/*int licznik = 0;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N-K; j++) {
-			if (i != 0 || i != 1 || i != 3 || i != 7 || i != 15) {
-				macierzHt[i][j] = macierzPT[licznik][j];
-				
-			}
-			else {
-
-			}
-		}
-	}
-	*/
 }
 void Macierz::wyznaczCiagOdebrany(int* ciag) {
 	int miejsceBledu = 0;

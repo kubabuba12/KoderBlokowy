@@ -72,7 +72,7 @@ int main()
 	plik << "Es/No [dB]" << setw(30) << "BER bez kodowania" << setw(30) << "BER z kodowaniem" << endl;
 	plik.close();
 	//główna pętla programu
-	for (float i = minEsNo; i <= maxEsNo; i += krok) {
+	for (double i = minEsNo; i <= maxEsNo; i += krok) {
 		for (int j = 0; j < iloscRamek; j++) {
 			//wylosowanie ramki, wyznaczenie ciągu kodowego
 			macierz.zakoduj();
