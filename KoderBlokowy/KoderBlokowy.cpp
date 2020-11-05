@@ -110,10 +110,6 @@ int main()
 		bledyBezK = 0;
 		bledyZK = 0;
 	}
-
-
-
-
 	
 }
 

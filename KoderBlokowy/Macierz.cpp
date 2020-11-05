@@ -129,14 +129,14 @@ void Macierz::wyznaczCiagOdebrany(int* ciag) {
 	for (int i = 0; i < N - K; i++) {
 		if (syndrom[i] != 0) {
 			blad = true;
-			miejsceBledu += pow(i, 2);
+			miejsceBledu += pow(2, i);
 		}
 	}
 	if (blad) {
-		if (*(ciag + miejsceBledu) == 0)
-			*(ciag + miejsceBledu) = 1;
+		if (*(ciag + miejsceBledu-1) == 0)
+			*(ciag + miejsceBledu-1) = 1;
 		else
-			*(ciag + miejsceBledu) = 0;
+			*(ciag + miejsceBledu-1) = 0;
 	}
 	//wyznaczenie ci¹gu po dekodowaniu
 	int licznik = 0;
